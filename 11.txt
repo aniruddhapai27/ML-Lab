@@ -1,0 +1,54 @@
+import numpy as np
+
+input = [[0,0],[0,1],[1,0],[1,1]]
+target_and=[0,0,0,1]
+target_or=[0,1,1,1]
+
+
+def step(value):
+  return 1 if value >=0 else 0
+
+def train(input, target, learning_rate=0.1, epochs=10):
+  w1 =0
+  w2=0
+  b=0
+
+  for _ in range(epochs):
+    for input_p, t in zip(input, target):
+      x1,x2 = input_p
+      sum = x1*w1+x2*w2+b
+      pred = step(sum)
+      err = t - pred
+      w1 += learning_rate*err*x1
+      w2 += learning_rate*err*x2
+      b += learning_rate*err
+
+  
+  return w1,w2,b
+
+def predict(input,w1,w2,b):
+  res = []
+  for x1,x2 in input:
+    out = step(x1*w1+x2*w2+b)
+    res.append(out)
+  return res
+
+
+w1_and,w2_and,b_and = train(input,target_and)
+w1_or,w2_or,b_or = train(input,target_or)
+
+print('AND-\n')
+print(f'weights w1{w1_and:.4f} and w2{w2_and:.4f} and bias is {b_and:.4f}')
+print('OR-\n')
+print(f'weights w1{w1_or:.4f} and w2{w2_or:.4f} and bias is {b_or:.4f}')
+
+
+print('AND predictions')
+out = predict(input,w1_and,w2_and,b_and)
+for i in range(len(input)):
+  print(f'input:{input[i]}, output: {out[i]}')
+
+print('OR predictions')
+out1 = predict(input,w1_or,w2_or,b_or)
+for i in range(len(input)):
+  print(f'input:{input[i]}, output: {out1[i]}')
